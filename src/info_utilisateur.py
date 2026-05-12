@@ -14,11 +14,6 @@ import re
 from src.tools import *
 
 
-def render(df):
+def render(df, departure_station, arrival_station, year):
 	st.write("## Page U")
-	df_departure_station = df.dropna(subset=['Departure station'])
-	stations = np.concatenate([["Toute direction"], df_departure_station['Departure station'].unique()])
-	col1, col2 = st.columns(2)
-	departure_station = col1.selectbox("Gare de dapart:",stations,)
-	arrival_station = col2.selectbox("Gare d'arriver:",stations,)
-	graph_departure_arrival_station(df, departure_station, arrival_station, 2022)
+	graph_departure_arrival_station(df, departure_station, arrival_station, year)

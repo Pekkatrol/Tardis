@@ -69,28 +69,18 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
 
     pretty_index = [labels.get(col, col) for col in cause_pct.index]
 
-    # Graphique radar
-    fig, ax = pl.subplots(figsize=(10, 10), subplot_kw=dict(projection='polar'))
-    
-    # Préparation des données pour le graphique radar
-    angles = np.linspace(0, 2 * np.pi, len(pretty_index), endpoint=False).tolist()
-    values = cause_pct.values.tolist()
-    
-    # Fermer le graphique en répétant le premier point
-    angles += angles[:1]
-    values += values[:1]
-    
-    # Tracer le graphique radar
-    ax.plot(angles, values, 'o-', linewidth=2, color="tab:blue", label="Causes")
-    ax.fill(angles, values, alpha=0.25, color="tab:blue")
-    
-    # Configuration des angles
-    ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(pretty_index, size=10)
-    
-    # Configuration de l'axe radial
-    ax.set_ylim(0, max(values))
-    ax.grid(True, alpha=0.25)
+    fig, ax = pl.subplots(figsize=(10, 5))
+    bars = ax.barh(pretty_index, cause_pct.values, color="tab:blue", alpha=0.9)
+    ax.invert_yaxis()
+
+    for bar, value in zip(bars, cause_pct.values):
+        ax.text(
+            value + 0.3,
+            bar.get_y() + bar.get_height() / 2,
+            f"{value:.1f}%",
+            va="center",
+            fontsize=9,
+        )
 
     departure_str = departure if departure not in (None, "Toute direction") else "Toutes gares"
     arrival_str = arrival if arrival not in (None, "Toute direction") else "Toutes gares"
@@ -102,13 +92,14 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
         year_str = str(years[0]) if len(years) == 1 else f"{min(years)} a {max(years)}"
 
     ax.set_title(
-        f"Répartition des causes de retard\n{departure_str} -> {arrival_str} ({year_str})\nValeurs en Pourcentage (%)",
-        pad=20, fontsize=12, fontweight='bold'
+        f"Repartition des causes de retard (%)\n{departure_str} -> {arrival_str} ({year_str})"
     )
+    ax.set_xlabel("Pourcentage moyen (%)")
+    ax.set_ylabel("Cause du retard")
+    ax.grid(axis="x", alpha=0.25)
     pl.tight_layout()
 
     st.pyplot(fig)
-
     st.markdown(
         """
 **Legende des causes**

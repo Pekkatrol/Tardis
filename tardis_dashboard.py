@@ -71,7 +71,17 @@ def main():
             df_departure_station = df.dropna(subset=['Departure station'])
             stations = np.concatenate([["Toute direction"], df_departure_station['Departure station'].unique()])
             departure_station = st.selectbox("Gare de dapart:",stations,)
-            arrival_station = st.selectbox("Gare d'arriver:",stations,)
+            
+            # Adapter la liste des gares d'arrivée selon la gare de départ
+            if departure_station == "Toute direction":
+                df_arrival_station = df.dropna(subset=['Arrival station'])
+                arrival_stations = np.concatenate([["Toute direction"], df_arrival_station['Arrival station'].unique()])
+            else:
+                # Filtrer les gares d'arrivée selon la gare de départ sélectionnée
+                df_filtered = df[df['Departure station'] == departure_station].dropna(subset=['Arrival station'])
+                arrival_stations = np.concatenate([["Toute direction"], df_filtered['Arrival station'].unique()])
+            
+            arrival_station = st.selectbox("Gare d'arriver:",arrival_stations,)
 
     if selected_page == "🌐 Info generale":
         render_info_generale(df, year)

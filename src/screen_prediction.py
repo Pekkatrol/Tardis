@@ -25,19 +25,28 @@ def get_service_national(df, departure_station: str, arrival_station: str) -> in
     ]
     if filtered.empty:
         filtered = df[
-            df["Departure station"].astype(str).str.strip().str.casefold().eq(arrival_key)
-            & df["Arrival station"].astype(str).str.strip().str.casefold().eq(departure_key)
+            df["Departure station"]
+            .astype(str)
+            .str.strip()
+            .str.casefold()
+            .eq(arrival_key)
+            & df["Arrival station"]
+            .astype(str)
+            .str.strip()
+            .str.casefold()
+            .eq(departure_key)
         ]
     if filtered.empty:
         return 1
     service = filtered.iloc[0]["Service"]
     return 1 if str(service).strip().casefold() == "national" else 0
 
+
 def check_error(detparture, arrival, month):
     ret = 0
     if detparture == None:
         st.error("Aucunes stations de depart n'a eté selectioné", icon="🚨")
-        ret = -1 
+        ret = -1
     if arrival == None:
         st.error("Aucunes stations d'arriver n'a eté selectioné", icon="🚨")
         ret = -1
@@ -45,6 +54,7 @@ def check_error(detparture, arrival, month):
         st.error("Aucuns mois n'a eté selectioné", icon="🚨")
         ret = -1
     return ret
+
 
 def model(
     model_file: str,
@@ -72,15 +82,26 @@ def model(
     prediction = model.predict(X_input)
     return prediction[0]
 
-def render(df, departure_station : str, arrival_station : str, month : int, year : int, vacances : int , weekend : int):
+
+def render(
+    df,
+    departure_station: str,
+    arrival_station: str,
+    month: int,
+    year: int,
+    vacances: int,
+    weekend: int,
+):
     st.markdown(
         "<h1 style='text-align: center;'>Prédiction</h1>", unsafe_allow_html=True
     )
     st.divider()
     left, middle, right = st.columns(3)
-    if middle.button("Lancée la prédiction", icon="📈", width="stretch", shortcut="Enter"):
+    if middle.button(
+        "Lancée la prédiction", icon="📈", width="stretch", shortcut="Enter"
+    ):
         if check_error(departure_station, arrival_station, month) == -1:
-            return 
+            return
         departure = "Departure station_" + departure_station
         arrival = "Arrival station_" + arrival_station
         service_national = get_service_national(df, departure_station, arrival_station)

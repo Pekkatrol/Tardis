@@ -210,4 +210,3 @@ def graph_departure_arrival_station_delay(df, departure=None, arrival=None, year
                 f"Retard moyen: {delay_mean:.2f} min",
                 icon="ℹ️",
             )
-

@@ -24,16 +24,16 @@ MONTHS = [
     "Janvier",
     "Février",
     "Mars",
-    "Avril", 
-    "Mai", 
-    "Juin", 
+    "Avril",
+    "Mai",
+    "Juin",
     "Juillet",
     "Août",
     "Septembre",
     "Octobre",
     "Novembre",
-    "Décembre"
-    ]
+    "Décembre",
+]
 
 COLUMNS_TO_NUMERIC = [
     "Average journey time",
@@ -59,11 +59,13 @@ COLUMNS_TO_NUMERIC = [
 
 type dataframe = pd.DataFrame
 
+
 def get_month_index(target, months) -> int:
     for i in range(len(months)):
         if target == months[i]:
             return i + 1
     return -1
+
 
 def selectbox_prediction(years):
     month = st.selectbox(
@@ -167,18 +169,19 @@ def main():
                 YEARS,
                 default=YEARS,
             )
-        if selected_page == "👤 Info utilisateur" or selected_page == "📈 Prédiction" :
+        if selected_page == "👤 Info utilisateur" or selected_page == "📈 Prédiction":
             departure_station, arrival_station = selectbox_stations(df, selected_page)
-        if selected_page == "📈 Prédiction" :
+        if selected_page == "📈 Prédiction":
             month, year, vacances, weekend = selectbox_prediction(YEARS)
-
 
     if selected_page == "🌐 Info generale":
         render_info_generale(df, year)
     elif selected_page == "👤 Info utilisateur":
         render_info_utilisateur(df, departure_station, arrival_station, year)
     elif selected_page == "📈 Prédiction":
-        render_prédiction(df, departure_station, arrival_station, month, year, vacances, weekend)
+        render_prédiction(
+            df, departure_station, arrival_station, month, year, vacances, weekend
+        )
     else:
         render_accueil(df)
 

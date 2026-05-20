@@ -87,4 +87,30 @@ def graph_departure_arrival_station(df, departure=None, arrival=None, year=None)
         ax.grid(alpha=0.25)
         pl.tight_layout()
         st.pyplot(fig)
-        st.info(f"Total line: {len(route_monthly)}", icon="ℹ️")
+        total_trains_col = next(
+            (
+                col
+                for col in [
+                    "Number of trains",
+                    "Number of planned trains",
+                    "Number of scheduled trains",
+                    "Total trains",
+                ]
+                if col in filtered.columns
+            ),
+            None,
+        )
+
+        cancelled_total = filtered[target_col].fillna(0).sum()
+        if total_trains_col is not None:
+            total_trains = filtered[total_trains_col].fillna(0).sum()
+            ratio = (cancelled_total / total_trains * 100) if total_trains else 0
+            st.info(
+                f"Trains annulés: {int(cancelled_total)} / {int(total_trains)} ({ratio:.2f}%)",
+                icon="ℹ️",
+            )
+        else:
+            st.info(
+                f"Trains annulés (total): {int(cancelled_total)}",
+                icon="ℹ️",
+            )

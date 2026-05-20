@@ -84,7 +84,7 @@ def render(df, departure_station : str, arrival_station : str, month : int, year
         departure = "Departure station_" + departure_station
         arrival = "Arrival station_" + arrival_station
         service_national = get_service_national(df, departure_station, arrival_station)
-        prediction = model(
+        train_late = model(
             "model.pkl",
             departure,
             arrival,
@@ -94,5 +94,17 @@ def render(df, departure_station : str, arrival_station : str, month : int, year
             weekend,
             service_national,
         )
-        st.write(f"Retard prédit : {prediction:.1f} minutes")
-        print(f"Retard prédit : {prediction:.1f} minutes")
+        pct_cancel = model(
+            "model_train_cancel.pkl",
+            departure,
+            arrival,
+            year,
+            month,
+            vacances,
+            weekend,
+            service_national,
+        )
+        st.write(f"Retard prédit : {train_late:.1f} minutes")
+        st.write(f"Pourcantage de chance d'un train annulé : {pct_cancel:.1f} %")
+        print(f"Retard prédit : {train_late:.1f} minutes")
+        print(f"Pourcantage de chance d'un train annulé : {pct_cancel:.1f} %")

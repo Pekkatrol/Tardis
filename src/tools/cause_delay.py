@@ -24,7 +24,7 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
         "Pct delay due to passenger handling (crowding, disabled persons, connections)",
     ]
     if year == []:
-        return st.error("Aucunes années n'a eté selectioné", icon="🚨")
+        return st.error("Aucune année n'a été sélectionnée", icon="🚨")
     filtered = df.copy()
 # get cols which stations
     if year is not None:
@@ -39,7 +39,7 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     available_cause_cols = [col for col in cause_cols if col in filtered.columns]
     if not available_cause_cols:
         st.warning(
-            "Aucune colonne de pourcentage des causes de retard n'a ete trouvee."
+            "Aucune colonne de pourcentage des causes de retard n'a été trouvée."
         )
         return
 
@@ -56,7 +56,7 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     )
 
     if cause_pct.empty:
-        st.info("Aucune donnee disponible pour cette combinaison de filtres.")
+        st.info("Aucune donnée disponible pour cette combinaison de filtres.")
         return
 
     labels = {
@@ -84,20 +84,20 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
         )
 
     departure_str = (
-        departure if departure not in (None, "Toute direction") else "Toutes gares"
+        departure if departure not in (None, "Toute direction") else "Toutes les gares"
     )
     arrival_str = (
-        arrival if arrival not in (None, "Toute direction") else "Toutes gares"
+        arrival if arrival not in (None, "Toute direction") else "Toutes les gares"
     )
 
     if year is None or (isinstance(year, (list, tuple, np.ndarray)) and "All" in year):
-        year_str = "toutes les annees"
+        year_str = "toutes les années"
     else:
         years = year if isinstance(year, (list, tuple, np.ndarray)) else [year]
-        year_str = str(years[0]) if len(years) == 1 else f"{min(years)} a {max(years)}"
+        year_str = str(years[0]) if len(years) == 1 else f"{min(years)} à {max(years)}"
 
     ax.set_title(
-        f"Repartition des causes de retard (%)\n{departure_str} -> {arrival_str} ({year_str})"
+        f"Répartition des causes de retard (%)\n{departure_str} -> {arrival_str} ({year_str})"
     )
     ax.set_xlabel("Pourcentage moyen (%)")
     ax.set_ylabel("Cause du retard")
@@ -105,15 +105,15 @@ def graph_delay_causes_by_route(df, departure=None, arrival=None, year=None):
     pl.tight_layout()
 
     st.pyplot(fig)
-    # legends 
+    # légende
     st.markdown(
         """
-**Legende des causes**
-- Causes externes: meteo, incidents externes
+**Légende des causes**
+- Causes externes: météo, incidents externes
 - Infrastructure: voies, signaux
-- Gestion du trafic: regulation des circulations
-- Materiel roulant: panne ou indisponibilite du train
-- Gestion en gare: organisation et equipements en gare
+- Gestion du trafic: régulation des circulations
+- Matériel roulant: panne ou indisponibilité du train
+- Gestion en gare: organisation et équipements en gare
 - Gestion voyageurs: affluence, assistance, correspondances
         """
     )
